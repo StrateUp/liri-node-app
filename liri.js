@@ -19,7 +19,10 @@ if (commands === 'my-tweets'){
 //return all the API info for the previous 20 tweets
 client.get('statuses/user_timeline', { count: 20 }, function(error, tweets, response) {
     if (!error) {
-      console.log((tweets));
+    	console.log(tweets);
+    	//tweets.forEach( tweet =>( 
+     	//console.log(tweets.created_at.split('+')[0].trim());
+
       //console.log(--------------);
     } else {
       console.log(error)
@@ -30,10 +33,16 @@ client.get('statuses/user_timeline', { count: 20 }, function(error, tweets, resp
 if(commands === 'spotify-this-song'){
  	
   var song = process.argv[3];
+  if(song ===''){
+
+  }
 
   spotify.search({ type: 'track', query: song }, function(err, data) {
     if ( !err ) {
-    	console.log(JSON.stringify(data).parse(data).tracks);
+    	console.log('Track:', data.tracks.items[0].name);
+        console.log('Preview Link:', data.tracks.items[0].preview_url);
+        console.log('Album:', data.tracks.items[0].album.name);
+         
     } else {
         console.log('Error occurred: ' + err);
     }
@@ -81,6 +90,7 @@ if(commands === `do-what-it-says`){
 
 	spotify.search({ type: 'track', query: dataArr[1] }, function(err, data) {
     	if ( !err ) {
+    		console.log(dataArr[1]);
     		console.log(JSON.stringify(data));
     	} else {
         	console.log('Error occurred: ' + err);
