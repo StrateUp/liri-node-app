@@ -15,7 +15,9 @@ if (commands === 'my-tweets'){
 //return all the API info for the previous 20 tweets
 client.get('statuses/user_timeline', { count: 20 }, function(error, tweets, response) {
     if (!error) {
-      console.log(tweets);
+      console.log((tweets));
+      console.log((tweets));
+      //console.log(--------------);
     } else {
       console.log(error)
     }
@@ -26,27 +28,42 @@ if(commands === 'spotify-this-song'){
  	var spotify = require("spotify");
 	var song = process.argv[3];
 
+  spotify.search({ type: 'track', query: song }, function(err, data) {
+    if ( !err ) {
+    	console.log(JSON.stringify(data));
+    } else {
+        console.log('Error occurred: ' + err);
+    }
+});
 
 }
 
 if(commands === 'movie-this'){
 	var request = require("request");
 	var movie = process.argv[3];
+	var movieTitle = movie.split(' ').join('+');
+	console.log(movieTitle);
+	var rtUrl = movie.split(' ').join('_');
 
 	// Then run a request to the OMDB API with the movie specified
-	request("http://www.omdbapi.com/?t=" + movie + "&y=&plot=short&r=json", function(error, response, body) {
+	request("http://www.omdbapi.com/?t=" + movieTitle + "&y=&plot=short&r=json", function(error, response, body) {
 
   		// If the request is successful (i.e. if the response status code is 200)
   		if (!error && response.statusCode === 200) {
 
     		// Parse the body of the site and recover just the imdbRating
     		// (Note: The syntax below for parsing isn't obvious. Just spend a few moments dissecting it).
-    		console.log(JSON.parse(body).t);
-    		console.log(JSON.parse(body).y);
+    		console.log(JSON.parse(body).Title);
+    		console.log(JSON.parse(body).Year);
    			console.log(JSON.parse(body).imdbRating);
-    		console.log(JSON.parse(body).country.lang.plot.actors);
+   			console.log(JSON.parse(body).Country);
+   			console.log(JSON.parse(body).Language);
+    		console.log(JSON.parse(body).Plot);
+  			console.log(JSON.parse(body).Actors);
+  			console.log(JSON.parse(body).Ratings[1].Value);
+  			console.log('https://www.rottentomatoes.com/m/' + rtUrl + '/');
   		}
-	});
+	 });
 }
 
 if(commands === `do-what-it-says`){
