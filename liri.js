@@ -1,13 +1,17 @@
+//use terminal command line to run commands
 var commands = process.argv[2];
+
 // * `my-tweets`
-
+var twitter = require("twitter");
 // * `spotify-this-song`
-
+var spotify = require("spotify");
 // * `movie-this`
-
+var request = require("request");
 //* `do-what-it-says`
+var fs = require("fs");
+
 if (commands === 'my-tweets'){
-	var twitter = require("twitter");
+	
 	//get the twitter API keys from the keys.js file
 	var keys = require("./keys.js");
 	var client = new twitter(keys.twitterKeys);
@@ -15,7 +19,6 @@ if (commands === 'my-tweets'){
 //return all the API info for the previous 20 tweets
 client.get('statuses/user_timeline', { count: 20 }, function(error, tweets, response) {
     if (!error) {
-      console.log((tweets));
       console.log((tweets));
       //console.log(--------------);
     } else {
@@ -25,12 +28,12 @@ client.get('statuses/user_timeline', { count: 20 }, function(error, tweets, resp
 }
 
 if(commands === 'spotify-this-song'){
- 	var spotify = require("spotify");
-	var song = process.argv[3];
+ 	
+  var song = process.argv[3];
 
   spotify.search({ type: 'track', query: song }, function(err, data) {
     if ( !err ) {
-    	console.log(JSON.stringify(data));
+    	console.log(JSON.stringify(data).parse(data).tracks);
     } else {
         console.log('Error occurred: ' + err);
     }
@@ -39,12 +42,14 @@ if(commands === 'spotify-this-song'){
 }
 
 if(commands === 'movie-this'){
-	var request = require("request");
+	
 	var movie = process.argv[3];
+		if(movie === ""){
+  			movie = "Mr. Nobody";
+  		}
 	var movieTitle = movie.split(' ').join('+');
-	console.log(movieTitle);
-	var rtUrl = movie.split(' ').join('_');
 
+	var rtUrl = movie.split(' ').join('_');
 	// Then run a request to the OMDB API with the movie specified
 	request("http://www.omdbapi.com/?t=" + movieTitle + "&y=&plot=short&r=json", function(error, response, body) {
 
@@ -68,12 +73,19 @@ if(commands === 'movie-this'){
 
 if(commands === `do-what-it-says`){
 
-	var fs = require("fs");
+	
 	// The code will store the contents of the reading inside the variable "data"
 	fs.readFile("random.txt", "utf8", function(error, data) {
 			console.log(data);
   	  var dataArr = data.split(",");
-		console.log(dataArr[1]);
+
+	spotify.search({ type: 'track', query: dataArr[1] }, function(err, data) {
+    	if ( !err ) {
+    		console.log(JSON.stringify(data));
+    	} else {
+        	console.log('Error occurred: ' + err);
+    	}
+	});
 	});
 }
 
